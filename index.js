@@ -33,6 +33,7 @@ async function run() {
     /* ________________________________________________ */
 
     const coffeeCollection = client.db('coffeeDB').collection('coffee');
+    const assignmentCollection = client.db('coffeeDB').collection('assignment');
     const userCollection = client.db('coffeeDB').collection('user');
 
     app.get('/coffee', async (req, res) => {
@@ -73,6 +74,48 @@ async function run() {
       const id = req.params.id;
       const query = { _id: new ObjectId(id) };
       const result = await coffeeCollection.deleteOne(query);
+      res.send(result);
+
+    })
+
+    app.get('/assignment', async (req, res) => {
+      const cursor = assignmentCollection.find();
+      const result = await cursor.toArray();
+      res.send(result);
+    })
+
+    app.get('/assignment/:id', async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) }
+      const result = await assignmentCollection.findOne(query);
+      res.send(result);
+    })
+
+    app.post('/assignment', async (req, res) => {
+      const newCoffee = req.body;
+      console.log(newCoffee);
+      const result = await coffeeCollection.insertOne(newCoffee);
+      res.send(result);
+    })
+
+    app.put('/assignment/:id', async (req, res) => {
+      const id = req.params.id;
+      const filter = { _id: new ObjectId(id) }
+      const options = { upsert: true };
+      const updatedCoffee = req.body;
+      const coffee = {
+        $set: {
+          name: updatedCoffee.name, quantity: updatedCoffee.quantity, supplier: updatedCoffee.supplier, taste: updatedCoffee.taste, category: updatedCoffee.category, details: updatedCoffee.details, photo: updatedCoffee.photo,
+        }
+      }
+      const result = await assignmentCollection.updateOne(filter, coffee, options)
+      res.send(result);
+    })
+
+    app.delete('/assignment/:id', async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const result = await assignmentCollection.deleteOne(query);
       res.send(result);
 
     })
