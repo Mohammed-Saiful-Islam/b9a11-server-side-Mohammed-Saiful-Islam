@@ -94,7 +94,7 @@ async function run() {
     app.post('/assignment', async (req, res) => {
       const newCoffee = req.body;
       console.log(newCoffee);
-      const result = await coffeeCollection.insertOne(newCoffee);
+      const result = await assignmentCollection.insertOne(newCoffee);
       res.send(result);
     })
 
